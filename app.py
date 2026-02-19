@@ -63,7 +63,10 @@ state = {
 # Сервисы
 spice_bridge = SPICEBridge()
 advisor      = ComponentAdvisor(llm_backend="mock")   # заменить на "local_qwen" когда натренирую модель
-analyzer = SchematicAnalyzer()
+analyzer = SchematicAnalyzer(
+    model_name="qwen-vl-max",  # Облачная модель
+    backend="qwen_agent"
+)
 
 
 # Вспомогательные функции
@@ -169,7 +172,7 @@ def on_analyze(image_path):
     warnings  = result.get("warnings", [])
     status    = f"Found {len(comps)} components · Circuit: {state['circuit_type']}"
     if warnings:
-        status += warnings
+        status += "\n" + "\n".join(warnings)
     return annotated, components_to_table(comps), status
 
 
